@@ -1,0 +1,33 @@
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
+@@ -117,11 +117,24 @@ use_doctest = get_option('doctest')
+ use_launcher = get_option('launcher')
+ if use_launcher
++        system_uid_max = '999'
++        system_unit_dir = join_paths(get_option('prefix'), 'lib/systemd/system')
++        user_unit_dir = join_paths(get_option('prefix'), 'lib/systemd/user')
++        catalog_dir = join_paths(get_option('prefix'), 'lib/systemd/catalog')
++
+         dep_expat = dependency('expat', version: '>=2.2')
+         dep_libsystemd = dependency('libsystemd', version: '>=230')
+-        dep_systemd = dependency('systemd', version: '>=230')
++        dep_systemd = dependency('systemd', version: '>=230', required: false)
++        if dep_systemd.found()
++                system_uid_max = dep_systemd.get_variable('systemuidmax')
++                system_unit_dir = dep_systemd.get_variable('systemdsystemunitdir')
++                user_unit_dir = dep_systemd.get_variable('systemduserunitdir')
++                catalog_dir = dep_systemd.get_variable('catalogdir')
++        else
++                message('systemd pkg-config metadata unavailable; using fallback install paths and SYSTEMUIDMAX=999')
++        endif
+ 
+-        add_project_arguments('-DSYSTEMUIDMAX=' + dep_systemd.get_variable('systemuidmax'), language: 'c')
+-        conf.set('systemunitdir', dep_systemd.get_variable('systemdsystemunitdir'))
+-        conf.set('userunitdir', dep_systemd.get_variable('systemduserunitdir'))
+-        conf.set('catalogdir', dep_systemd.get_variable('catalogdir'))
++        add_project_arguments('-DSYSTEMUIDMAX=' + system_uid_max, language: 'c')
++        conf.set('systemunitdir', system_unit_dir)
++        conf.set('userunitdir', user_unit_dir)
++        conf.set('catalogdir', catalog_dir)
+ endif
