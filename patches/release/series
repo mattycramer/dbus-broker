@@ -1,0 +1,3 @@
+0001-release-build-require-apparmor-and-disable-selinux.patch
+0002-release-build-record-subproject-revisions.patch
+0003-release-build-use-string-package-versions.patch

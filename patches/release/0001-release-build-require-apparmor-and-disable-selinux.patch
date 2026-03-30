@@ -1,0 +1,32 @@
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
+@@ -80,6 +80,9 @@ add_project_arguments('-DPACKAGE_VERSION=' + meson.project_version(), language:
+ #
+ 
+ use_apparmor = get_option('apparmor')
++if not use_apparmor
++        error('This release patch set requires AppArmor support (-D apparmor=true)')
++endif
+ if use_apparmor
+         dep_libapparmor = dependency('libapparmor', version: '>=3.0')
+ endif
+@@ -139,6 +142,9 @@ if use_reference_test
+ #
+ 
+ use_selinux = get_option('selinux')
++if use_selinux
++        error('This release patch set disables SELinux support (-D selinux=false)')
++endif
+ if use_selinux
+         dep_libselinux = dependency('libselinux', version: '>=3.2')
+ endif
+diff --git a/meson_options.txt b/meson_options.txt
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -1,4 +1,4 @@
+-option('apparmor', type: 'boolean', value: false, description: 'AppArmor support')
++option('apparmor', type: 'boolean', value: true, description: 'AppArmor support')
+ option('audit', type: 'boolean', value: false, description: 'Audit support')
+ option('docs', type: 'boolean', value: false, description: 'Build documentation')
+ option('doctest', type: 'boolean', value: false, description: 'Test code of documentation')

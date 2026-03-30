@@ -1,0 +1,36 @@
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
+@@ -74,7 +74,7 @@ dep_osi = dependency(
+ add_project_arguments(dep_cstdaux.get_variable('cflags').split(' '), language: 'c')
+ add_project_arguments('-D_TIME_BITS=64', language: 'c')
+ add_project_arguments('-DBINDIR="' + join_paths(get_option('prefix'), get_option('bindir')) + '"', language: 'c')
+-add_project_arguments('-DPACKAGE_VERSION=' + meson.project_version(), language: 'c')
++add_project_arguments('-DPACKAGE_VERSION="' + meson.project_version() + '"', language: 'c')
+ 
+ #
+ # Config: apparmor
+diff --git a/src/broker/main.c b/src/broker/main.c
+--- a/src/broker/main.c
++++ b/src/broker/main.c
+@@ -76,7 +76,7 @@ static int parse_argv(int argc, char **argv) {
+                         return MAIN_EXIT;
+ 
+                 case ARG_VERSION:
+-                        printf("dbus-broker %d\n", PACKAGE_VERSION);
++                        printf("dbus-broker %s\n", PACKAGE_VERSION);
+                         return MAIN_EXIT;
+ 
+                 case ARG_AUDIT:
+diff --git a/src/launch/main.c b/src/launch/main.c
+--- a/src/launch/main.c
++++ b/src/launch/main.c
+@@ -61,7 +61,7 @@ static int parse_argv(int argc, char **argv) {
+                         return MAIN_EXIT;
+ 
+                 case ARG_VERSION:
+-                        printf("dbus-broker-launch %d\n", PACKAGE_VERSION);
++                        printf("dbus-broker-launch %s\n", PACKAGE_VERSION);
+                         return MAIN_EXIT;
+ 
+                 /* noop for backward compatibility */
