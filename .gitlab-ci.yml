@@ -3,7 +3,7 @@ workflow:
     # Protected release tags drive GitLab release assets.
     - if: '$CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_TAG =~ /(^[0-9]$|^[0-9A-Za-z][0-9A-Za-z._-]{0,33}[0-9]$)/'
     # Protected mcr/release branch pipelines exist only for optional GitHub sync.
-    - if: '$CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH == "mcr/release"
+    - if: '$CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH == "mcr/release" && $GH_RELEASE_PUSH =~ /^(true|TRUE|1|yes|YES|y|Y|on|ON)$/'
     - when: never
 
 stages:
