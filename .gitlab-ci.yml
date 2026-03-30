@@ -41,6 +41,6 @@ variables:
   PATCH_SERIES_FILE: "patches/release/series"
   GIT_BRANCH_PREFIX: "mcr"
   GIT_BRANCH_RELEASE: "release"
-  # Keep the build image runner-controlled; the shared dbus helper installs the full toolchain itself.
-  GL_CICD_RUNNER_BUILD: '${GL_CICD_RUNNER_UBUNTU}'
+  # dbus-broker needs a real Rust-capable runner image; the shared helper only fills gaps.
+  GL_CICD_RUNNER_BUILD: '${GL_CICD_RUNNER_RUST}'
   GL_CICD_RUNNER_RELEASE: '${GL_CICD_RUNNER_UBUNTU}'

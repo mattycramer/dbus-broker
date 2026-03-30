@@ -11,9 +11,19 @@ diff --git a/meson.build b/meson.build
  if use_apparmor
          dep_libapparmor = dependency('libapparmor', version: '>=3.0')
  endif
+@@ -89,6 +92,9 @@ if use_apparmor
+ #
+
+ use_audit = get_option('audit')
++if use_audit
++        error('This release patch set disables audit support (-D audit=false)')
++endif
+ if use_audit
+         dep_libaudit = dependency('audit', version: '>=3.0')
+         dep_libcapng = dependency('libcap-ng', version: '>=0.6')
 @@ -139,6 +142,9 @@ if use_reference_test
  #
- 
+
  use_selinux = get_option('selinux')
 +if use_selinux
 +        error('This release patch set disables SELinux support (-D selinux=false)')
@@ -30,3 +40,26 @@ diff --git a/meson_options.txt b/meson_options.txt
  option('audit', type: 'boolean', value: false, description: 'Audit support')
  option('docs', type: 'boolean', value: false, description: 'Build documentation')
  option('doctest', type: 'boolean', value: false, description: 'Test code of documentation')
+diff --git a/src/session/mod.rs b/src/session/mod.rs
+--- a/src/session/mod.rs
++++ b/src/session/mod.rs
+@@ -500,7 +500,6 @@ impl Session {
+         let arg0 = self.dbus_broker.as_ref().unwrap_or(&arg0_default);
+         let mut cmd = std::process::Command::new(arg0);
+
+-        cmd.arg("--audit");
+         cmd.arg("--scope=user");
+
+         if let Some(config_file) = self.config_file.as_ref() {
+diff --git a/src/units/system/dbus-broker.service.in b/src/units/system/dbus-broker.service.in
+--- a/src/units/system/dbus-broker.service.in
++++ b/src/units/system/dbus-broker.service.in
+@@ -16,7 +16,7 @@ LimitNOFILE=16384
+ ProtectSystem=full
+ PrivateTmp=true
+ PrivateDevices=true
+-ExecStart=@bindir@/dbus-broker-launch --scope system --audit
++ExecStart=@bindir@/dbus-broker-launch --scope system
+
+ [Install]
+ Alias=dbus.service
