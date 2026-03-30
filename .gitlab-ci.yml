@@ -4,17 +4,10 @@ workflow:
     - when: never
 
 stages:
-  - github-sync
   - gitlab-release
   - gitlab-cleanup
 
 include:
-  - project: '${GL_CICD_SHARED_PROJ}'
-    ref: main
-    file: '/github/validate.yml'
-  - project: '${GL_CICD_SHARED_PROJ}'
-    ref: main
-    file: '/github/push.yml'
   - project: '${GL_CICD_SHARED_PROJ}'
     ref: main
     file: '/gitlab/validate.yml'
@@ -30,8 +23,6 @@ include:
 
 variables:
   GL_CICD_SHARED_PROJ: 'core-assets/cicd/delivery'
-  GH_RELEASE_PUSH: "false"
-  GH_FORCE_PUSH: "false"
   GL_RELEASE_ASSET: "true"
   GL_CLEAR_GLAB: "false"
   APPEND_VERSION: "false"
