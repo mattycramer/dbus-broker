@@ -16,7 +16,7 @@ LimitNOFILE=16384
 ProtectSystem=full
 PrivateTmp=true
 PrivateDevices=true
-ExecStart=@bindir@/dbus-broker-launch --scope system --audit
+ExecStart=@bindir@/dbus-broker-launch --scope system
 
 [Install]
 Alias=dbus.service

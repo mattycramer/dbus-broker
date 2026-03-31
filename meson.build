@@ -74,13 +74,16 @@ dep_osi = dependency(
 add_project_arguments(dep_cstdaux.get_variable('cflags').split(' '), language: 'c')
 add_project_arguments('-D_TIME_BITS=64', language: 'c')
 add_project_arguments('-DBINDIR="' + join_paths(get_option('prefix'), get_option('bindir')) + '"', language: 'c')
-add_project_arguments('-DPACKAGE_VERSION=' + meson.project_version(), language: 'c')
+add_project_arguments('-DPACKAGE_VERSION="' + meson.project_version() + '"', language: 'c')
 
 #
 # Config: apparmor
 #
 
 use_apparmor = get_option('apparmor')
+if not use_apparmor
+        error('This release patch set requires AppArmor support (-D apparmor=true)')
+endif
 if use_apparmor
         dep_libapparmor = dependency('libapparmor', version: '>=3.0')
 endif
@@ -90,6 +93,9 @@ endif
 #
 
 use_audit = get_option('audit')
+if use_audit
+        error('This release patch set disables audit support (-D audit=false)')
+endif
 if use_audit
         dep_libaudit = dependency('audit', version: '>=3.0')
         dep_libcapng = dependency('libcap-ng', version: '>=0.6')
@@ -116,14 +122,27 @@ use_doctest = get_option('doctest')
 
 use_launcher = get_option('launcher')
 if use_launcher
+        system_uid_max = '999'
+        system_unit_dir = join_paths(get_option('prefix'), 'lib/systemd/system')
+        user_unit_dir = join_paths(get_option('prefix'), 'lib/systemd/user')
+        catalog_dir = join_paths(get_option('prefix'), 'lib/systemd/catalog')
+
         dep_expat = dependency('expat', version: '>=2.2')
         dep_libsystemd = dependency('libsystemd', version: '>=230')
-        dep_systemd = dependency('systemd', version: '>=230')
+        dep_systemd = dependency('systemd', version: '>=230', required: false)
+        if dep_systemd.found()
+                system_uid_max = dep_systemd.get_variable('systemuidmax')
+                system_unit_dir = dep_systemd.get_variable('systemdsystemunitdir')
+                user_unit_dir = dep_systemd.get_variable('systemduserunitdir')
+                catalog_dir = dep_systemd.get_variable('catalogdir')
+        else
+                message('systemd pkg-config metadata unavailable; using fallback install paths and SYSTEMUIDMAX=999')
+        endif
 
-        add_project_arguments('-DSYSTEMUIDMAX=' + dep_systemd.get_variable('systemuidmax'), language: 'c')
-        conf.set('systemunitdir', dep_systemd.get_variable('systemdsystemunitdir'))
-        conf.set('userunitdir', dep_systemd.get_variable('systemduserunitdir'))
-        conf.set('catalogdir', dep_systemd.get_variable('catalogdir'))
+        add_project_arguments('-DSYSTEMUIDMAX=' + system_uid_max, language: 'c')
+        conf.set('systemunitdir', system_unit_dir)
+        conf.set('userunitdir', user_unit_dir)
+        conf.set('catalogdir', catalog_dir)
 endif
 
 #
@@ -140,6 +159,9 @@ endif
 #
 
 use_selinux = get_option('selinux')
+if use_selinux
+        error('This release patch set disables SELinux support (-D selinux=false)')
+endif
 if use_selinux
         dep_libselinux = dependency('libselinux', version: '>=3.2')
 endif

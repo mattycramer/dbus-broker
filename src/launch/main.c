@@ -61,7 +61,7 @@ static int parse_argv(int argc, char *argv[]) {
                         return MAIN_EXIT;
 
                 case ARG_VERSION:
-                        printf("dbus-broker-launch %d\n", PACKAGE_VERSION);
+                        printf("dbus-broker-launch %s\n", PACKAGE_VERSION);
                         return MAIN_EXIT;
 
                 /* noop for backward compatibility */

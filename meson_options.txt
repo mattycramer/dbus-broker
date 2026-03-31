@@ -1,4 +1,4 @@
-option('apparmor', type: 'boolean', value: false, description: 'AppArmor support')
+option('apparmor', type: 'boolean', value: true, description: 'AppArmor support')
 option('audit', type: 'boolean', value: false, description: 'Audit support')
 option('docs', type: 'boolean', value: false, description: 'Build documentation')
 option('doctest', type: 'boolean', value: false, description: 'Test code of documentation')

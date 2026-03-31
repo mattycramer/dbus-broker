@@ -500,7 +500,6 @@ impl Config {
         let arg0 = self.dbus_broker.as_ref().unwrap_or(&arg0_default);
         let mut cmd = std::process::Command::new(arg0);
 
-        cmd.arg("--audit");
         cmd.arg("--scope=user");
 
         if let Some(config_file) = self.config_file.as_ref() {
